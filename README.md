@@ -10,6 +10,10 @@ Author's notes:
 - My experience only: No claims are made for the quality of software or hardware.
 - also see  https://github.com/adafruit/circuitpython/issues/10741
 
+
+<img width="429" height="260" alt="image" src="https://github.com/user-attachments/assets/91b10c9c-4a39-4644-acc0-a2532ba1a233" />
+
+
 ## TL;DR
 
 **If you're using SD card readers with level shifters on ESP32: Use CircuitPython.** MicroPython's `sdcard.py` driver has timing issues that make it unreliable with common SD card reader modules, while CircuitPython's `sdcardio` works flawlessly out of the box.
