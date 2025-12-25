@@ -10,9 +10,7 @@ Author's notes:
 - My experience only: No claims are made for the quality of software or hardware.
 - also see  https://github.com/adafruit/circuitpython/issues/10741
 
-
-<img width="429" height="260" alt="image" src="https://github.com/user-attachments/assets/91b10c9c-4a39-4644-acc0-a2532ba1a233" />
-
+<img width="331" height="279" alt="image" src="https://github.com/user-attachments/assets/b1b6d694-3a8e-4cc7-b846-46648a221dda" />
 
 ## TL;DR
 
