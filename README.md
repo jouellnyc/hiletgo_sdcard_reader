@@ -1,6 +1,6 @@
 # SD Card Compatibility: MicroPython vs CircuitPython on ESP32
 
-A comprehensive guide documenting SD card reliability issues with MicroPython on ESP32 hardware and why CircuitPython provides superior compatibility.
+A guide documenting the Hiletgo SD card reader with MicroPython and CircuitPython on ESP32 hardware
 
 Author's notes: 
 - This is specifically for https://www.amazon.com/HiLetgo-Adater-Interface-Conversion-Arduino/dp/B07BJ2P6X6/
