@@ -8,7 +8,7 @@ Author's notes:
 - With Micro Python I spent hours and had nothing to show for it. 
 - I am sharing Claude.ai's summary - unedited - to save you the hours.
 - My experience only: No claims are made for the quality of software or hardware.
-- also see  https://github.com/adafruit/circuitpython/issues/10741
+- Also see  https://github.com/adafruit/circuitpython/issues/10741
 
 <img width="331" height="279" alt="image" src="https://github.com/user-attachments/assets/b1b6d694-3a8e-4cc7-b846-46648a221dda" />
 
