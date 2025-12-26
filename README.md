@@ -404,12 +404,152 @@ For reference, the working configuration:
 - 5V power, 3.3V logic
 - Includes pull-up resistors on all lines
 
-## Additional Resources
 
-- [CircuitPython SD Card Guide](https://learn.adafruit.com/adafruit-micro-sd-breakout-board-card-tutorial/circuitpython)
-- [MicroPython SD Card Driver Source](https://github.com/micropython/micropython-lib/blob/master/micropython/drivers/storage/sdcard/sdcard.py)
-- [SD Card SPI Protocol Specification](https://www.sdcard.org/downloads/pls/)
+
+## Known CircuitPython Issues & Solutions
+
+### The "Schrödinger's Files" Problem
+
+When using SD cards with CircuitPython's `sdcardio` module, you may encounter:
+- Empty directory (`[]`) after soft reboot (Ctrl+D), even though files exist
+- Files appearing only on the **second** call to `os.listdir()`
+- Device hangs or crashes on rapid SD card access
+- Disk usage shows files (e.g., 50MB used) but `listdir()` returns nothing
+
+#### Root Cause
+
+SD cards have internal microcontrollers that need time after `storage.mount()` to:
+1. **Settle hardware** (~1 second for initialization)
+2. **Build directory cache** (internal lookup tables)
+3. **Complete pending operations**
+
+The `storage.mount()` function returns success before the SD card controller is fully ready, especially problematic after soft reboots where the controller is in a partially-initialized state.
+
+#### The Solution: sdcard_helper.py
+
+This repository includes `sdcard_helper.py` which wraps the mount process with proper initialization:
+```python
+import sdcard_helper
+
+# Mount with proper settling and cache priming
+if sdcard_helper.mount():
+    print("SD card ready!")
+    files = os.listdir("/sd")  # Works reliably now
+```
+
+**What it does:**
+- Adds 1-second settling time after mount
+- Primes the directory cache with a dummy read
+- Includes rate limiting to prevent controller overwhelm
+- Handles "already mounted" cases gracefully
+
+#### Related CircuitPython Issues
+
+This helper addresses systematic timing issues in `sdcardio`:
+- [Issue #10741](https://github.com/adafruit/circuitpython/issues/10741) - Initial report and complete solution
+- [Issue #10758](https://github.com/adafruit/circuitpython/issues/10758) - Related soft reboot issue
+
+These issues affect multiple ESP32 boards and SD card brands. The root problem is in CircuitPython's `sdcardio` module, not your hardware.
+
+#### Testing Results
+
+**Hardware tested:**
+- ✅ ESP32-S3 DevKitC-1-N8R8
+- ✅ ESP32 Feather Huzzah  
+- ✅ HiLetgo SD card readers
+- ✅ Multiple SD card brands (SanDisk, Samsung, generic)
+
+**Before fix:**
+- ❌ Empty directory after soft reboot
+- ❌ Files appear only on second `listdir()`
+- ❌ Device hangs on rapid access
+
+**After fix:**
+- ✅ Files visible immediately on first access
+- ✅ Works reliably after soft reboot
+- ✅ Stable with repeated operations
+- ✅ No hangs or crashes
+
+#### Technical Details
+
+For those interested in the deep dive:
+
+**Settling Time:** SD card controllers need ~1 second after `storage.mount()` to complete internal initialization. This includes stabilizing voltage regulators, initializing flash memory interfaces, and preparing wear-leveling algorithms.
+
+**Cache Priming:** The first `os.listdir()` call forces the SD card to build its directory structure cache. Without this, the cache may be uninitialized (returns empty) or stale (returns outdated data).
+
+**Rate Limiting:** SD card controllers can be overwhelmed by rapid successive operations. The helper enforces a 250ms minimum between calls to prevent SPI bus contention and controller lockup.
+
+See the [sdcard_helper.py](sdcard_helper.py) source code for complete implementation details.
 
 ---
 
-**Questions or similar issues?** Open an issue to discuss. This guide is based on real debugging experience and extensive testing.
+## Hardware Requirements
+
+### Power Supply
+
+The HiLetgo SD card reader requires stable 3.3V or 5V power:
+
+- **Capacitor required:** 100µF on SD card VCC line
+  - Prevents brownouts during SD card operations
+  - Smooths current spikes during reads/writes
+  - Critical for reliable operation
+
+### Level Shifting (for 5V systems)
+
+If using 5V logic (not needed for ESP32 which is 3.3V):
+- Use a bidirectional level shifter
+- SD cards operate at 3.3V logic levels
+- Direct connection of 5V signals will damage SD cards
+
+---
+
+## Quick Start
+```python
+import sdcard_helper
+import os
+
+# Mount SD card with proper initialization
+if sdcard_helper.mount():
+    # SD card is ready!
+    
+    # List files
+    sdcard_helper.print_info()
+    
+    # Test read/write
+    sdcard_helper.test_sd()
+    
+    # Your code here...
+    files = os.listdir("/sd")
+    print(f"Found {len(files)} files")
+else:
+    print("SD card not available")
+```
+
+---
+
+## Files in This Repository
+
+- **`sdcard_helper.py`** - Robust SD card mounting with settling time and cache priming
+- **`sd_config.py`** - Pin configuration for your board
+- **`test_sd.py`** - Test script to verify SD card functionality
+---
+
+## Contributing
+Found an issue or have improvements? Pull requests welcome!
+
+If you encounter SD card problems not solved by this helper, please:
+1. Check the [CircuitPython issues](https://github.com/adafruit/circuitpython/issues) listed above
+2. Open an issue here with details about your hardware and symptoms
+3. Include debug output from `sdcard_helper.print_info()`
+
+---
+## License
+MIT License - see LICENSE file for details
+
+---
+
+## Acknowledgments
+- Adafruit for CircuitPython and `sdcardio` module
+- Community members reporting and debugging SD card issues
+- Claude.ai for assistance in identifying timing and caching issues
