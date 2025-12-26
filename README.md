@@ -458,8 +458,8 @@ These issues affect multiple ESP32 boards and SD card brands. The root problem i
 **Hardware tested:**
 - ✅ ESP32-S3 DevKitC-1-N8R8
 - ✅ ESP32 Feather Huzzah  
-- ✅ HiLetgo SD card readers
-- ✅ Multiple SD card brands (SanDisk, Samsung, generic)
+- ✅ HiLetgo SD card reader
+- ✅ Multiple SD generic card brands
 
 **Before fix:**
 - ❌ Empty directory after soft reboot
