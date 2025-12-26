@@ -546,11 +546,6 @@ If you encounter SD card problems not solved by this helper, please:
 3. Include debug output from `sdcard_helper.print_info()`
 
 ---
-## License
-MIT License - see LICENSE file for details
-
----
-
 ## Acknowledgments
 - Adafruit for CircuitPython and `sdcardio` module
 - Community members reporting and debugging SD card issues
