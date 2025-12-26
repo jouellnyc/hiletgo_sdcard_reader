@@ -95,7 +95,6 @@ Related issues: [#10741](https://github.com/adafruit/circuitpython/issues/10741)
 ## Files
 - `sdcard_helper.py` - Robust SD mounting with timing fixes
 - `sd_config.py` - Pin configuration
-- `play.py` - Example music player
 
 ## Technical Notes
 
