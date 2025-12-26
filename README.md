@@ -451,7 +451,7 @@ This helper addresses systematic timing issues in `sdcardio`:
 - [Issue #10741](https://github.com/adafruit/circuitpython/issues/10741) - Initial report and complete solution
 - [Issue #10758](https://github.com/adafruit/circuitpython/issues/10758) - Related soft reboot issue
 
-These issues affect multiple ESP32 boards and SD card brands. The root problem is in CircuitPython's `sdcardio` module, not your hardware.
+These issues likely affect multiple ESP32 boards and SD card brands. 
 
 #### Testing Results
 
