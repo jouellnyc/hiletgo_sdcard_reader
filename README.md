@@ -255,7 +255,7 @@ Success!
 
 ### Why CircuitPython Works
 
-CircuitPython's `sdcardio` module has superior implementation:
+CircuitPython's `sdcardio` module has a different implementation:
 
 1. **Better timing tolerance** - Appears to include appropriate delays between commands
 2. **Robust initialization** - Handles level shifter delays gracefully  
