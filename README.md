@@ -110,6 +110,3 @@ Related issues: [#10741](https://github.com/adafruit/circuitpython/issues/10741)
 - More mature CircuitPython support
 - Stable across all operations
 
----
-
-**Questions?** See full README or open an issue with board model + SD module details.
