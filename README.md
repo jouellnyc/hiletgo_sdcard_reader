@@ -4,7 +4,7 @@ A guide documenting the Hiletgo SD card reader with MicroPython and CircuitPytho
 
 Author's notes: 
 - This is specifically for https://www.amazon.com/HiLetgo-Adater-Interface-Conversion-Arduino/dp/B07BJ2P6X6/
-- With Circuit Python I got the sdcard reader to work with Circuit Python very easily. 
+- With Circuit Python I got the sdcard reader to work very easily. 
 - With Micro Python I spent hours and had nothing to show for it. 
 - I am sharing Claude.ai's summary - unedited - to save you the hours.
 - My experience only: No claims are made for the quality of software or hardware.
