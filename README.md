@@ -518,9 +518,6 @@ if sdcard_helper.mount():
     # List files
     sdcard_helper.print_info()
     
-    # Test read/write
-    sdcard_helper.test_sd()
-    
     # Your code here...
     files = os.listdir("/sd")
     print(f"Found {len(files)} files")
@@ -534,7 +531,6 @@ else:
 
 - **`sdcard_helper.py`** - Robust SD card mounting with settling time and cache priming
 - **`sd_config.py`** - Pin configuration for your board
-- **`test_sd.py`** - Test script to verify SD card functionality
 ---
 
 ## Contributing
