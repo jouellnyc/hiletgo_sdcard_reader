@@ -92,10 +92,6 @@ Related issues: [#10741](https://github.com/adafruit/circuitpython/issues/10741)
 **Production projects:** Use ESP32 Feather Huzzah  
 **Development/prototyping:** Either board works (S3 requires care)
 
-## Files
-- `sdcard_helper.py` - Robust SD mounting with timing fixes
-- `sd_config.py` - Pin configuration
-
 ## Technical Notes
 
 **Why S3 is problematic:**
@@ -109,4 +105,3 @@ Related issues: [#10741](https://github.com/adafruit/circuitpython/issues/10741)
 - Better power regulation (Adafruit board design)
 - More mature CircuitPython support
 - Stable across all operations
-
