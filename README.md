@@ -420,7 +420,7 @@ When using SD cards with CircuitPython's `sdcardio` module, you may encounter:
 
 #### Root Cause
 
-SD cards have internal microcontrollers that need time after `storage.mount()` to:
+SD cards have internal microcontrollers that may need time after `storage.mount()` to:
 1. **Settle hardware** (~1 second for initialization)
 2. **Build directory cache** (internal lookup tables)
 3. **Complete pending operations**
