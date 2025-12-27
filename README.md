@@ -1,6 +1,6 @@
 # ESP32 SD Card Reader Guide: Board Compatibility
 
-Quick reference for using HiLetgo SD card readers with ESP32 boards and CircuitPython.
+Quick reference for using a [HiLetgo SD card reader](https://www.amazon.com/dp/B07BJ2P6X6) with ESP32 boards and CircuitPython.
 
 ## Hardware Compatibility
 
