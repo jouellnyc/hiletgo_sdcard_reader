@@ -15,7 +15,7 @@ Also See: https://github.com/jouellnyc/esp32_MAX98357A
 ## Hardware Requirements
 
 ### Both Boards
-- **100µF capacitor** on SD VCC (mandatory)
+- **100µF capacitor** on SD VCC (suggested)
 - HiLetgo SD reader with level shifter (5V powered)
 - Short wires (<6 inches)
 
