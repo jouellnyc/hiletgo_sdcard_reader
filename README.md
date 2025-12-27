@@ -6,7 +6,7 @@ Quick reference for using HiLetgo SD card readers with ESP32 boards and CircuitP
 
 | Board | Status | Baudrate | Notes |
 |-------|--------|----------|-------|
-| **Waveshare RP2350-Plus** |✅✅✅FFlawless | up to 12MHZ | Recommended for production|
+| **Waveshare RP2350-Plus** |✅✅✅Flawless | up to 12MHZ | Recommended for production|
 | **ESP32 Feather Huzzah** | ✅Very Good | Up to 4MHz | Required Workarounds |
 | **ESP32-S3 DevKitC** | ⚠️ Barely Functional | 250kHz max | Unstable - sometimes worked |
 
