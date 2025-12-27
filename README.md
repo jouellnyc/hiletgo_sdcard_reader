@@ -1,4 +1,4 @@
-# CircuitPython SD Card Reader Guide: Board Compatibility
+# CircuitPython SD Reader Guide: Board Compatibility with HiLetgo card reader
 
 Quick reference for using SD card readers (tested with [HiLetgo SD card reader](https://www.amazon.com/dp/B07BJ2P6X6)) with various microcontroller boards and CircuitPython.
 
