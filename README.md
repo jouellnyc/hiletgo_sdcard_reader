@@ -28,5 +28,7 @@ Also See: https://github.com/jouellnyc/esp32_MAX98357A
 Related issues: [#10741](https://github.com/adafruit/circuitpython/issues/10741), [#10758](https://github.com/adafruit/circuitpython/issues/10758)
 
 ## Recommendation
+
 **Development/prototyping:** Either Huzzah or WaveShare board works 
-**Production projects:** WaveShare Board 
+
+**Production projects:**  WaveShare Board is snappier with better sound quality for playback
