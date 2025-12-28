@@ -484,16 +484,6 @@ This will:
 
 ---
 
-## Files in This Repository
-
-- **`sd_config.py`** - Universal pin configuration
-- **`sdcard_helper.py`** - Mount helper with all workarounds
-- **`test_sd_bug.py`** - Comprehensive SD card test
-- **`README.md`** - This file
-- **`examples/`** - Usage examples
-
----
-
 ## Contributing
 
 Found an issue or tested a new board? Pull requests welcome!
