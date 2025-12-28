@@ -291,7 +291,7 @@ files = os.listdir("/sd")  # 0 files
 Copy these files to your CIRCUITPY drive:
 - `sd_config.py` - Pin configuration
 - `sdcard_helper.py` - Mounting helper with workarounds
-- Your main code (e.g., `play.py`, `test_sd_bug.py`)
+- Your main code (e.g., `play.py`, `test_sd_debug.py`)
 
 ### Step 4: Pin Configuration
 
@@ -377,8 +377,8 @@ if sdcard_helper.mount():
 
 Run the included test to verify your board:
 ```python
-# Copy test_sd_bug.py to your board, then:
-import test_sd_bug
+# Copy test_sd_debug.py to your board, then:
+import test_sd_debug
 ```
 
 This will:
@@ -490,7 +490,7 @@ Found an issue or tested a new board? Pull requests welcome!
 Please include:
 - Board model and CircuitPython version
 - SD card reader model
-- Test results from `test_sd_bug.py`
+- Test results from `test_sd_debug.py`
 - Any workarounds you discovered
 
 ---
