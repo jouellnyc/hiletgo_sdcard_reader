@@ -11,8 +11,8 @@ Quick reference for SD card compatibility across microcontroller boards with Cir
 
 | Board | Status | Max Speed | Key Issue |
 |-------|--------|-----------|-----------|
-| **🏆 Waveshare RP2350-Plus** | ✅ Perfect | 12 MHz | None |
-| **ESP32 Feather Huzzah** | ✅ Good | 8 MHz | Soft reboot hangs mount |
+| **🏆 Waveshare RP2350-Plus** | ✅✅✅ Perfect | 12 MHz | None |
+| **ESP32 Feather Huzzah** | ✅✅ Very Good | 8 MHz | Soft reboot hangs mount |
 | **ESP32-S3 DevKitC** | ⚠️ Poor | 250 kHz | 1-second timeout bug |
 
 ---
