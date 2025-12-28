@@ -422,7 +422,6 @@ This will:
 
 **Huzzah:** 
 - Ensure you used hard reset (not Ctrl+D)
-- Files should appear immediately at 4 MHz
 
 **DevKitC:**
 - Files may disappear after 1 second
