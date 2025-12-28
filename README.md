@@ -58,7 +58,7 @@ Perfect reliability, fastest speed, best audio quality. No workarounds needed.
 | **Audio playback** | ✅ Good | Stable playback |
 
 **Configuration:**
-- Baudrate: **4 MHz**
+- Baudrate: **up to 9 MHz** (failed sd mount at 10 MHz)
 - Settling time: Minimal (0.1s just to be safe)
 - Special handling: Soft reboot protection required
 
