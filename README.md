@@ -189,7 +189,7 @@ Detects board, checks for bugs, provides specific recommendations.
 **Affected:** DevKitC only  
 **Not affected:** Waveshare, Huzzah
 
-### Issue 3: Cache Bug (All Boards)
+### Issue 3: Cache Bug (DevKitC)
 
 **Symptom:** First `listdir()` returns empty
 
