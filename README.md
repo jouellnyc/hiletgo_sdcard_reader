@@ -200,7 +200,7 @@ _ = os.listdir("/sd")  # Prime cache
 os.sync()
 ```
 
-Issues 2 and 3 overlap but are not fully 'work aroundable'...Really the device was so difficult to use, it's not worth it.
+Issues 2 and 3 overlap but are not fully 'work aroundable'...Really the DEV KIT C was so difficult to use, it's not worth it.
 
 ---
 
