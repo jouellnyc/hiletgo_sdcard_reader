@@ -393,7 +393,7 @@ This will:
 ## Important Rules
 
 ### ✅ DO:
-- Use hard reset (RESET button) when developing with SD cards
+- Use hard reset (RESET button) when developing with SD cards and the ESP32 Huzzah board 
 - Add 100µF capacitor on SD card VCC
 - Use short wires
 - Keep wires away from high-speed signals
