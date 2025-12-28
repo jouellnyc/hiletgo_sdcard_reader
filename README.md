@@ -511,7 +511,7 @@ MIT License - see LICENSE file for details
 
 ## See Also
 
-- [ESP32 MAX98357A Audio Player](https://github.com/jouellnyc/esp32_MAX98357A) - Music player using these SD card helpers
+- [ESP32 MAX98357A Audio Player](https://github.com/jouellnyc/esp32_MAX98357A) - Music player using these SD card helpers (hosts the sd* file mentioned here)
 - [CircuitPython Documentation](https://docs.circuitpython.org/)
 - [SD Card Issues #10741](https://github.com/adafruit/circuitpython/issues/10741)
 - [SD Card Issues #10758](https://github.com/adafruit/circuitpython/issues/10758)
