@@ -399,7 +399,7 @@ This will:
 - Keep wires away from high-speed signals
 
 ### ❌ DON'T:
-- **Never use Ctrl+D (soft reboot) with SD cards on ESP32 boards**
+- **Never use Ctrl+D (soft reboot) with a mounted SD cards on the ESP32 Huzzah board and expect to the next mount to work**
 - Don't use long wires (>6 inches)
 - Don't expect DevKitC to work well with SD cards
 - Don't mix 5V and 3.3V power without level shifters
