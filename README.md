@@ -11,7 +11,7 @@ Quick reference for using SD card readers (tested with [HiLetgo SD card reader](
 | Board | SD Card Status | Speed | Notes |
 |-------|----------------|-------|-------|
 | **🏆 Waveshare RP2350-Plus** | ✅✅✅ Flawless | Up to 12 MHz | **RECOMMENDED** - Perfect for production |
-| **ESP32 Feather Huzzah** | ✅ Very Good | Up to 4 MHz | Requires soft reboot workaround |
+| **ESP32 Feather Huzzah** | ✅ Very Good | Up to 8 MHz | Requires soft reboot workaround |
 | **ESP32-S3 DevKitC** | ⚠️ Problematic | 250 kHz max | Has 1-second timeout issue |
 
 ---
@@ -51,7 +51,7 @@ Perfect reliability, fastest speed, best audio quality. No workarounds needed.
 
 | Feature | Status | Details |
 |---------|--------|---------|
-| **SD card mount** | ✅ Good | Reliable at 4 MHz |
+| **SD card mount** | ✅ Good | Reliable at 8 MHz |
 | **Directory listing** | ✅ Good | No cache bug |
 | **File operations** | ✅ Good | No timeout issues |
 | **Soft reboot (Ctrl+D)** | ❌ **HANGS** | Must use hard reset |
