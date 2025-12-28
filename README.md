@@ -169,25 +169,15 @@ Use Waveshare or Huzzah instead. If you must use DevKitC, implement keepalive pa
 ### Power Supply
 
 **All boards:**
-- 100µF capacitor on SD card VCC line (recommended, sometimes required)
+- 100µF capacitor on SD card VCC line (recommended)
 - Stable power source (USB or external)
-
-**DevKitC specifically:**
-- Powered USB hub recommended
-- 100µF capacitor required (not optional)
 
 ### SD Card Modules
 
 **Tested and working:**
 - HiLetgo SD card reader with level shifter (5V powered)
   - Works best with Waveshare and Huzzah
-  - Problematic with DevKitC due to signal quality
-
-**Recommended for DevKitC (not yet tested in this guide):**
-- 3.3V native SD card modules (no level shifter)
-  - Adafruit MicroSD Breakout
-  - SparkFun MicroSD Breakout
-  - Generic "SPI SD Module" without level shifter
+  - Problematic with DevKitC 
 
 ---
 
