@@ -240,7 +240,7 @@ After soft reboot, SD card stays powered but in corrupted state:
 **Affected boards:**
 - ✅ Waveshare: No issue
 - ❌ Huzzah: **ALWAYS hangs**
-- ❌ DevKitC: No issue
+- ✅DevKitC: No issue
 
 **Solution:** Always use hard reset, never Ctrl+D
 ```python
