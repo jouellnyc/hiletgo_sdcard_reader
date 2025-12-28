@@ -50,18 +50,9 @@ SD_BAUDRATE = 12_000_000  # 12 MHz
 
 **Critical Issue:** After Ctrl+D, `storage.mount()` hangs at VfsFat creation. SD card stays powered but data channel breaks.
 
-**Workaround:** Always use RESET button, never Ctrl+D
-```python
-import supervisor
-
-if supervisor.runtime.run_reason == supervisor.RunReason.SOFT_REBOOT:
-    print("⚠️ Soft reboot detected - press RESET button")
-    raise SystemExit
-```
-
 **Configuration:**
 ```python
-SD_BAUDRATE = 4_000_000  # 4-8 MHz
+SD_BAUDRATE = 8_000_000  # 4 up to 8 MHz
 ```
 
 **Recommendation:** ⭐⭐⭐⭐ Good choice, just avoid soft reboot
