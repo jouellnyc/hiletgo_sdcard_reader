@@ -177,17 +177,16 @@ Detects board, checks for bugs, provides specific recommendations.
 
 **Solution:** Always use RESET button, add soft reboot detection
 
-**Affected:** Huzzah, DevKitC  
+**Affected:** Huzzah
 **Not affected:** Waveshare
 
-### Issue 2: 1-Second Timeout (DevKitC Only)
+### Issue 2: 1-Second Timeout (DevKitC)
 
 **Symptom:** Files disappear after 1 second idle
 
 **Solution:** Keepalive pattern or use different board
 
 **Affected:** DevKitC only  
-**Not affected:** Waveshare, Huzzah
 
 ### Issue 3: Cache Bug (DevKitC)
 
@@ -201,7 +200,7 @@ _ = os.listdir("/sd")  # Prime cache
 os.sync()
 ```
 
-**Severity:** Minor (fixed by sdcard_helper.py)
+Issues 2 and 3 overlap but are not fully 'work aroundable'...Really the device was so difficult to use, it's not worth it.
 
 ---
 
