@@ -52,7 +52,7 @@ SD_BAUDRATE = 12_000_000  # 12 MHz
 
 **Configuration:**
 ```python
-SD_BAUDRATE = 8_000_000  # 4 up to 8 MHz
+SD_BAUDRATE = 8_000_000  # 4 up toHz
 ```
 
 **Recommendation:** ⭐⭐⭐⭐ Good choice, just avoid soft reboot
@@ -63,11 +63,11 @@ SD_BAUDRATE = 8_000_000  # 4 up to 8 MHz
 
 **Not recommended - multiple severe issues.**
 
-- Baudrate: 250 kHz only (4x slower than Huzzah)
-- Soft reboot (Ctrl+D): Hangs (same as Huzzah)
+- Baudrate: 250 kHz only 
+- Soft reboot (Ctrl+D): Stable 
 - Cache bug: Yes
 - Timeout issue: **YES - 1 second** ❌
-- Audio quality: Works but slow
+- Audio quality: Works but slow / inconsistent
 
 **Critical Issue:** Directory cache dumps after 1 second of SPI idle:
 ```python
