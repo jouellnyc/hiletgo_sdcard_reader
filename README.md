@@ -247,6 +247,91 @@ Issues 2 and 3 overlap but are not fully 'work aroundable'...Really the DEV KIT 
 
 ---
 
+
+## ⚠️ SD Card Compatibility: Our Observations
+
+### What We Observed
+
+During testing, we encountered an unexpected SD card compatibility issue:
+
+**A Samsung SD card that worked perfectly on PC failed to mount on three different microcontroller boards:**
+
+- ❌ ESP32-S3 DevKitC - Mount fails
+- ❌ Adafruit Huzzah32 - Mount fails  
+- ❌ WaveShare RP2350 Plus - Hangs during `storage.mount()`
+- ✅ PC/Mac/Linux - Reads and writes perfectly
+
+**A generic no-name SD card worked flawlessly on all three boards at 12MHz.**
+
+### Our Theory (Unverified)
+
+We suspect this happens because:
+
+**PCs handle SD cards more robustly than microcontrollers:**
+
+| PC/Computer | Microcontroller |
+|-------------|-----------------|
+| Sophisticated error correction | Minimal error handling |
+| Retries failed operations | Quick timeouts |
+| Aggressive caching | Little to no caching |
+| Works around bad sectors | Fails on first error |
+| Complex drivers | Simple SPI implementation |
+
+The Samsung card may have timing or communication characteristics that work fine with robust PC drivers but cause issues with CircuitPython's simpler SPI implementation.
+
+### Symptoms We Encountered
+
+With the problematic Samsung card:
+- `sdcardio.SDCard()` initialized successfully
+- `_sd.count()` returned block count correctly (card was communicating)
+- `storage.mount()` hung indefinitely
+- Same behavior across all three different microcontroller boards
+
+With the working generic card:
+- All operations completed successfully
+- Reliable mounting and file operations at 12MHz
+- No issues across any tested board
+
+### What To Try If You Have SD Card Issues
+
+**If your SD card works on your computer but fails on your microcontroller:**
+
+1. **Try a different SD card** - Even if your current card appears healthy on PC
+2. **Test with a basic/generic card** - In our case, the cheaper card worked better
+3. **Format as FAT32** - Not exFAT
+4. **Try different baudrates** - Lower speeds (1-4MHz) may help marginal cards
+5. **Check your wiring and power** - Rule out hardware issues first
+
+### Testing Your SD Card
+```python
+import sdcard_helper
+
+# Try to mount
+if sdcard_helper.mount():
+    print("✓ Mount successful!")
+    
+    # Test directory listing
+    files = sdcard_helper.list_files()
+    print(f"✓ Found {len(files)} files")
+    
+    # Test actual file reading (the real test!)
+    try:
+        with open('/sd/test.txt', 'w') as f:
+            f.write("test")
+        with open('/sd/test.txt', 'r') as f:
+            data = f.read()
+        print("✓ File read/write works!")
+    except Exception as e:
+        print(f"✗ File operations failed: {e}")
+        print("  → Try a different SD card")
+else:
+    print("✗ Mount failed - try a different SD card")
+```
+
+---
+
+**Bottom Line:** Based on our testing, if your SD card works on your computer but fails on your microcontroller, trying a different (even cheaper) card may solve the problem. We don't fully understand why, but we observed this pattern across multiple boards.
+
 ## Related Links
 
 - [ESP32 MAX98357A Audio Player](https://github.com/jouellnyc/esp32_MAX98357A)
