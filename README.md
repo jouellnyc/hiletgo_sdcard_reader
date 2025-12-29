@@ -261,7 +261,7 @@ During testing, we encountered an unexpected SD card compatibility issue:
 - ❌ WaveShare RP2350 Plus - Hangs during `storage.mount()`
 - ✅ PC/Mac/Linux - Reads and writes perfectly
 
-**A generic no-name SD card worked flawlessly on all three boards at 12MHz.**
+**A generic no-name SD card worked on all three boards.**
 
 ### Our Theory (Unverified)
 
