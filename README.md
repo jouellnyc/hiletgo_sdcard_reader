@@ -254,7 +254,7 @@ Issues 2 and 3 overlap but are not fully 'work aroundable'...Really the DEV KIT 
 
 During testing, we encountered an unexpected SD card compatibility issue:
 
-**A Samsung SD card that worked perfectly on PC failed to mount on three different microcontroller boards:**
+**A Samsung SD card (EVO Select 64 GB) that worked perfectly on PC failed to mount on three different microcontroller boards:**
 
 - ❌ ESP32-S3 DevKitC - Mount fails
 - ❌ Adafruit Huzzah32 - Mount fails  
