@@ -14,8 +14,6 @@ Usage:
         files = sdcard_helper.list_files()
 """
 
-__version__ = "1.2.0"
-
 import busio
 import sdcardio
 import storage
@@ -24,15 +22,13 @@ import time
 import gc
 import sd_config
 
-print(f"sdcard_helper v{__version__}")
-
 # Module-level state
 _spi = None
 _sd = None
 _vfs = None
 _mounted = False
 _last_operation_time = 0
-_verbosity = 'diags'  # 'silent', 'diags', or 'debug'
+_verbosity = 'diags' # 'silent', 'diags', or 'debug'
 
 
 def _debug_print(message):
@@ -236,19 +232,29 @@ def mount(timeout=10, verbose=None):
     start_time = time.monotonic()
     
     try:
-        # Initialize SPI and SD card (reuses existing if available)
-        _spi, _sd = _init_sd_card()
+        # Initialize SPI
+        _debug_print(f"[DEBUG] Initializing SPI: SCK={sd_config.SD_SCK}, MOSI={sd_config.SD_MOSI}, MISO={sd_config.SD_MISO}")
+        _spi = busio.SPI(sd_config.SD_SCK, MOSI=sd_config.SD_MOSI, MISO=sd_config.SD_MISO)
         
-        if _sd is None:
+        if _check_timeout(start_time, timeout, "SPI init"):
             return False
         
+        # Initialize SD Card hardware
+        _diag_print("Waiting for SD card to stabilize...")
+        _debug_print(f"[DEBUG] Initializing SD card: CS={sd_config.SD_CS}, baudrate={sd_config.SD_BAUDRATE}")
+        _sd = sdcardio.SDCard(_spi, sd_config.SD_CS, baudrate=sd_config.SD_BAUDRATE)
+        
         if _check_timeout(start_time, timeout, "SD card init"):
+            _spi = None
+            _sd = None
             return False
         
         # PRE-VALIDATE: Run diagnostics before mount attempt
         _diag_print("Testing SD card communication...")
         
         if not _validate_sd_communication(_sd):
+            _spi = None
+            _sd = None
             return False
         
         # Run MBR and multiblock tests (warnings only if they fail)
@@ -259,6 +265,8 @@ def mount(timeout=10, verbose=None):
             _diag_print("  ⚠ Multi-block read failed, attempting mount anyway...")
         
         if _check_timeout(start_time, timeout, "pre-validation"):
+            _spi = None
+            _sd = None
             return False
         
         # Mount the filesystem
@@ -287,6 +295,9 @@ def mount(timeout=10, verbose=None):
         elapsed = time.monotonic() - start_time
         print(f"✗ Mount failed after {elapsed:.1f}s: {e}")
         _debug_print(f"[DEBUG] Exception details: {type(e).__name__}")
+        _spi = None
+        _sd = None
+        _vfs = None
         return False
     finally:
         # Restore verbosity if it was temporarily changed
@@ -509,43 +520,37 @@ def verify_sd_stability(iterations=10):
 def _init_sd_card():
     """
     Initialize SPI and SD card without mounting filesystem.
-    Reuses existing module-level SPI/SD objects if available.
     
     Returns:
         Tuple of (spi, sd) objects, or (None, None) on failure
     """
-    global _spi, _sd
-    
-    # If we already have initialized objects, reuse them
-    if _spi is not None and _sd is not None:
-        _debug_print("  [DEBUG] Reusing existing SPI/SD card objects")
-        return (_spi, _sd)
-    
     try:
         # Initialize SPI
         _diag_print("  Initializing SPI...")
-        _spi = busio.SPI(sd_config.SD_SCK, MOSI=sd_config.SD_MOSI, MISO=sd_config.SD_MISO)
+        spi = busio.SPI(sd_config.SD_SCK, MOSI=sd_config.SD_MOSI, MISO=sd_config.SD_MISO)
         
         # Initialize SD Card
         _diag_print("  Initializing SD card...")
-        _sd = sdcardio.SDCard(_spi, sd_config.SD_CS, baudrate=sd_config.SD_BAUDRATE)
+        sd = sdcardio.SDCard(spi, sd_config.SD_CS, baudrate=sd_config.SD_BAUDRATE)
         
-        return (_spi, _sd)
+        return (spi, sd)
         
     except Exception as e:
         print(f"✗ SD card initialization failed: {e}")
         return (None, None)
 
 
-def _read_mbr_standalone():
+def read_mbr():
     """
-    Internal function to read MBR with independent SD card initialization.
-    Used by read_mbr() public function.
+    Test reading MBR from SD card without mounting filesystem.
+    Useful for debugging SD card issues.
     
     Returns:
         True if MBR read successful, False otherwise
     """
-    # Use shared initialization (will reuse pins if already claimed)
+    print("Testing MBR read (no mount required)...")
+    
+    # Initialize SD card
     temp_spi, temp_sd = _init_sd_card()
     if temp_sd is None:
         return False
@@ -570,17 +575,14 @@ def _read_mbr_standalone():
     except Exception as e:
         print(f"✗ Test failed: {e}")
         return False
-
-
-def read_mbr():
-    """
-    Test reading MBR from SD card without mounting filesystem.
-    Useful for debugging SD card issues.
-    
-    Note: Releases all pins after completion. Wait before calling mount().
-    
-    Returns:
-        True if MBR read successful, False otherwise
-    """
-    print("Testing MBR read (no mount required)...")
-    return _read_mbr_standalone()
+        
+    finally:
+        # Cleanup
+        if temp_spi:
+            try:
+                temp_spi.deinit()
+            except:
+                pass
+        gc.collect()
+        
+        
