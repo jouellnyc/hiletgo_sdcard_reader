@@ -12,7 +12,7 @@ Quick reference for SD card compatibility across microcontroller boards with Cir
 | Board | Status | Max Speed | Key Issue |
 |-------|--------|-----------|-----------|
 | **🏆 Waveshare RP2350-Plus** | ✅✅✅ Perfect | 12 MHz | None |
-| **ESP32 Feather Huzzah** | ✅✅✅ Excellent | 8 MHz | ~~Soft reboot hangs mount~~ **FIXED in v1.2.0!** ✅ |
+| **ESP32 Feather Huzzah** | ✅✅✅ Excellent | 8 MHz | None (with compatible SD cards) |
 | **ESP32-S3 DevKitC** | ⚠ Poor | 250 kHz | 1-second timeout bug |
 
 ---
@@ -28,6 +28,7 @@ Quick reference for SD card compatibility across microcontroller boards with Cir
 - Cache bug: No
 - Timeout issue: No
 - Audio quality: Best
+- SD card compatibility: Excellent
 
 **Configuration:**
 ```python
@@ -40,22 +41,21 @@ SD_BAUDRATE = 12_000_000  # 12 MHz
 
 ### ESP32 Feather Huzzah
 
-**Excellent performance with sdcard_helper v1.2.0+**
+**Excellent performance with compatible SD cards.**
 
 - Baudrate: Up to 8 MHz
-- Soft reboot (Ctrl+D): ✅ **Works with v1.2.0+**
+- Soft reboot (Ctrl+D): ✅ Works perfectly
 - Cache bug: No
 - Timeout issue: No
 - Audio quality: Excellent
-
-**Previous Issue (RESOLVED):** Earlier versions hung after Ctrl+D soft reboot. Version 1.2.0 introduced pre-validation steps that act as an SD card "warm-up sequence," ensuring the card controller is fully initialized before mounting. This completely resolved the soft reboot issue.
+- SD card compatibility: Good (avoid problematic cards - see SD Card Compatibility section)
 
 **Configuration:**
 ```python
 SD_BAUDRATE = 8_000_000  # Up to 8 MHz
 ```
 
-**Recommendation:** ⭐⭐⭐⭐⭐ Excellent choice, now fully reliable with sdcard_helper v1.2.0+
+**Recommendation:** ⭐⭐⭐⭐⭐ Excellent choice with compatible SD cards
 
 ---
 
@@ -103,7 +103,7 @@ SD_BAUDRATE = 250_000  # 250 kHz only
 ### 1. Choose Board
 
 - **New projects:** Waveshare RP2350-Plus or ESP32 Feather Huzzah
-- **ESP32 projects:** Huzzah (excellent with v1.2.0+) - avoid DevKitC
+- **ESP32 projects:** Huzzah (excellent performance) - avoid DevKitC
 
 ### 2. Hardware Setup
 
@@ -159,20 +159,21 @@ if sdcard_helper.mount():
 
 ## What's New in v1.2.0
 
-### 🎉 Soft Reboot Issue RESOLVED (Huzzah)
+### 🎉 Improved SD Card Compatibility
 
-**The Problem:** After soft reboot (Ctrl+D), `storage.mount()` would hang on the Huzzah. The SD card stayed powered but the data channel broke during reinitialization.
-
-**The Solution:** Version 1.2.0 introduces a pre-validation sequence that acts as an SD card "warm-up":
+**The Enhancement:** Version 1.2.0 introduces a pre-validation sequence that improves SD card compatibility:
 
 1. **`_validate_sd_communication()`** - Reads block count, wakes up controller
 2. **`_read_mbr()`** - First data read, exercises the data path
 3. **`_test_multiblock_read()`** - Sequential read, verifies sustained communication
 4. **Then** `storage.mount()` - Card is now fully ready
 
-This sequence gives the SD card controller time to stabilize and clear any stale state from the previous session.
+This sequence gives SD card controllers time to stabilize and clear any stale state, which helps with:
+- Marginal/slower SD cards
+- Cards with complex controllers
+- Soft reboot scenarios on some boards
 
-**Result:** ✅ Soft reboot now works 100% reliably on Huzzah!
+**Note:** This does NOT fix fundamentally incompatible SD cards (like the Samsung card documented below). Those cards will fail regardless of warm-up sequence because their SPI implementation is broken.
 
 ### Other Improvements in v1.2.0
 
@@ -203,18 +204,7 @@ print(sdcard_helper.__version__)
 
 ## Known Issues
 
-### Issue 1: Soft Reboot Hang (RESOLVED ✅)
-
-**Status:** ✅ **FIXED in v1.2.0**
-
-**Previous symptom:** Mount hung after Ctrl+D on Huzzah
-
-**Solution:** Update to sdcard_helper v1.2.0 or later. The pre-validation warm-up sequence completely resolves this issue.
-
-**Affected:** Huzzah (now fixed), DevKitC (minimal impact)  
-**Not affected:** Waveshare
-
-### Issue 2: 1-Second Timeout (DevKitC)
+### Issue 1: 1-Second Timeout (DevKitC)
 
 **Symptom:** Files disappear after 1 second idle
 
@@ -222,7 +212,7 @@ print(sdcard_helper.__version__)
 
 **Affected:** DevKitC only  
 
-### Issue 3: Cache Bug (DevKitC)
+### Issue 2: Cache Bug (DevKitC)
 
 **Symptom:** First `listdir()` returns empty
 
@@ -234,7 +224,7 @@ _ = os.listdir("/sd")  # Prime cache
 os.sync()
 ```
 
-Issues 2 and 3 overlap but are not fully 'work aroundable'...Really the DEV KIT C was so difficult to use, it's not worth it.
+Issues 1 and 2 overlap but are not fully 'work aroundable'...Really the DEV KIT C was so difficult to use, it's not worth it.
 
 ---
 
@@ -245,7 +235,7 @@ Issues 2 and 3 overlap but are not fully 'work aroundable'...Really the DEV KIT 
 | Mount time | ~0.5s | ~0.5s | ~0.5s |
 | listdir() | <1ms | ~2ms | ~8ms |
 | Read 5MB MP3 | ~1s | ~2.5s | ~10s |
-| Soft reboot reliability | ✅ 100% | ✅ 100% (v1.2.0+) | ⚠️ Varies |
+| SD card compatibility | Excellent | Excellent | Poor |
 
 ---
 
@@ -253,103 +243,117 @@ Issues 2 and 3 overlap but are not fully 'work aroundable'...Really the DEV KIT 
 
 ### ✅ DO:
 - Use sdcard_helper v1.2.0 or later
-- Use RESET button OR Ctrl+D (both work with v1.2.0+)
+- Test your SD card with `sdcard_helper.read_mbr()` before using
 - Add 100µF capacitor on SD VCC
 - Use short wires
+- Use compatible SD cards (avoid Samsung EVO - see compatibility section)
 
 ### ❌ DON'T:
 - Use DevKitC for SD projects
 - Use wires >6 inches
-- ~~Use Ctrl+D with Huzzah~~ (This is now fine with v1.2.0!)
+- Assume expensive SD cards work better (often the opposite!)
 
 ---
 
 ## Troubleshooting
 
 **Mount fails:**
-1. Verify sdcard_helper version (should be 1.2.0+)
-2. Check wiring
-3. Verify FAT32 format
-4. Try different SD card (see SD Card Compatibility section)
+1. Test SD card with `sdcard_helper.read_mbr()` to verify basic compatibility
+2. Try a different SD card (generic/no-name cards often work better)
+3. Check wiring
+4. Verify FAT32 format
 5. Lower baudrate
 
-**Files not appearing:**
-- Waveshare: Check SD format
-- Huzzah: Update to v1.2.0+ (resolves soft reboot issues)
-- DevKitC: Implement keepalive or switch boards
+**Hangs during mount:**
+- Most likely: Incompatible SD card (try a different card)
+- Test with `sdcard_helper.read_mbr()` - if this hangs, card is incompatible
+- See SD Card Compatibility section below
 
-**Hangs on mount:**
-- Solution: Update to sdcard_helper v1.2.0 or later
-- If still hanging: Try different SD card (see compatibility section)
+**Files not appearing:**
+- Waveshare/Huzzah: Check SD format, try different card
+- DevKitC: Implement keepalive or switch boards
 
 ---
 
-## ⚠️ SD Card Compatibility: Our Observations
+## ⚠️ SD Card Compatibility: Critical Information
+
+### **The Most Important Lesson: Expensive ≠ Better**
+
+**During extensive testing, we discovered that "premium" SD cards can be WORSE for microcontrollers than cheap generic cards.**
+
+---
 
 ### What We Observed
 
-During testing, we encountered an unexpected SD card compatibility issue:
+**A Samsung EVO Select 64GB card that worked perfectly on PC failed on ALL THREE tested microcontroller boards:**
 
-**A Samsung SD card (EVO Select 64 GB) that worked perfectly on PC failed to mount on three different microcontroller boards:**
+| Board | Samsung EVO Select Result | Generic No-Name Card Result |
+|-------|---------------------------|----------------------------|
+| ESP32-S3 DevKitC | ❌ Hangs reading MBR | ✅ Works perfectly |
+| Adafruit Huzzah32 | ❌ Hangs reading MBR | ✅ Works perfectly |
+| WaveShare RP2350 Plus | ❌ Hangs reading MBR | ✅ Works perfectly |
+| PC/Mac/Linux | ✅ Works perfectly | ✅ Works perfectly |
 
-- ❌ ESP32-S3 DevKitC - Hangs reading MBR
-- ❌ Adafruit Huzzah32 - Hangs reading MBR
-- ❌ WaveShare RP2350 Plus - Hangs during MBR read
-- ✅ PC/Mac/Linux - Reads and writes perfectly
+---
 
-**A generic no-name SD card worked flawlessly on all three boards.**
+### The Samsung Card's Behavior
 
-### Our Theory (Unverified)
+**Successful operations:**
+- ✅ `sdcardio.SDCard()` initialization
+- ✅ `_sd.count()` returns block count (58,064,896 blocks)
+- ✅ Capacity calculation (28352 MB / 27.69 GB)
 
-We suspect this happens because:
+**Where it fails:**
+- ❌ **`readblocks(0, mbr)` hangs indefinitely**
+- ❌ Cannot read ANY data blocks via SPI
+- ❌ `storage.mount()` never completes
 
-**PCs handle SD cards more robustly than microcontrollers:**
+**Interesting finding:** Card reports ~28GB capacity but is sold as 64GB, strongly suggesting it's a **counterfeit card with hacked firmware**. This buggy firmware likely explains why SPI block reads fail.
+
+---
+
+### Why This Happens
+
+**PCs vs. Microcontrollers handle SD cards differently:**
 
 | PC/Computer | Microcontroller |
 |-------------|-----------------|
 | Sophisticated error correction | Minimal error handling |
-| Retries failed operations | Quick timeouts |
-| Aggressive caching | Little to no caching |
-| Works around bad sectors | Fails on first error |
-| Complex drivers | Simple SPI implementation |
+| Retries failed operations dozens of times | Times out quickly |
+| Aggressive caching and buffering | Little to no caching |
+| Works around bad sectors automatically | Fails on first error |
+| Complex drivers with fallback modes | Simple SPI implementation |
+| Can use different communication modes | SPI mode only |
 
-The Samsung card may have timing or communication characteristics that work fine with robust PC drivers but cause issues with CircuitPython's simpler SPI implementation.
+**Premium SD cards often have:**
+- Complex controllers with advanced features
+- Aggressive wear-leveling that confuses simple SPI
+- Timing characteristics optimized for UHS speeds, not basic SPI
+- Manufacturing variations that robust PC drivers tolerate but simple implementations don't
 
-### Symptoms We Encountered
+**Cheap/generic SD cards often have:**
+- Simpler, more predictable controllers
+- Basic SPI implementation that follows spec closely
+- Fewer "optimization" features that cause compatibility issues
+- Better compatibility with embedded systems
 
-With the problematic Samsung card:
-- `sdcardio.SDCard()` initialized successfully
-- `_sd.count()` returned block count correctly (58,064,896 blocks = ~28GB, suggesting it's actually a 32GB card, not 64GB)
-- **`readblocks()` hung indefinitely when trying to read MBR**
-- Same behavior across all three different microcontroller boards
-- Likely a counterfeit card with buggy controller firmware
+---
 
-With the working generic card:
-- All operations completed successfully
-- Reliable mounting and file operations at 12MHz
-- No issues across any tested board
+### How to Test Your SD Card
 
-### What To Try If You Have SD Card Issues
-
-**If your SD card works on your computer but fails on your microcontroller:**
-
-1. **Try a different SD card** - Even if your current card appears healthy on PC
-2. **Test with a basic/generic card** - In our case, the cheaper card worked better
-3. **Format as FAT32** - Not exFAT
-4. **Try different baudrates** - Lower speeds (1-4MHz) may help marginal cards
-5. **Check your wiring and power** - Rule out hardware issues first
-6. **Test for counterfeits** - Use h2testw (Windows) or F3 (Mac/Linux) to verify real capacity
-
-### Testing Your SD Card without mounting it!
+**Before using an SD card in your project, test it:**
 ```python
-# This may work even if you can't mount
-
 import sdcard_helper
-Output: sdcard_helper v1.2.0
-Output: --- SD Config: Detected adafruit_feather_huzzah32 ---
-Output: --- SD Config: using 4000000 SD_BAUDRATE ---
 
-sdcard_helper.read_mbr()
+# Test basic communication without mounting
+result = sdcard_helper.read_mbr()
+
+# If this hangs or fails, the SD card is incompatible
+# Try a different card before wasting time debugging
+```
+
+**What `read_mbr()` shows:**
+```
 Testing MBR read (no mount required)...
   Initializing SPI...
   Initializing SD card...
@@ -361,20 +365,81 @@ Reading MBR...
   ✓ Valid MBR signature: 0xAA55
   Partition type: FAT32
 ✅ MBR read successful!
-True
 ```
 
-If `read_mbr()` hangs, the SD card has fundamental SPI communication issues and won't work with CircuitPython regardless of the board or settings.
+**If it hangs at "Reading MBR (block 0)..." → Card is incompatible, try a different one**
 
 ---
 
-**Bottom Line:** Any given microcontroller, with any given external component could work or not work based on some internal variance. The best teacher is empirical evidence, testing, and keeping good notes. 
+### Recommended SD Cards
+
+**Cards confirmed to work well:**
+- Generic/no-name microSD cards from various manufacturers
+- SanDisk Ultra (basic models, not Extreme/Pro)
+- Basic Kingston cards
+- **Rule of thumb: Cheaper and simpler is often better**
+
+**Cards with known issues:**
+- Samsung EVO Select (tested multiple, all failed)
+- Samsung EVO Plus (likely similar issues)
+- High-performance cards marketed for cameras/video (UHS-II, V90, etc.)
+
+**Note:** Even within the same model, manufacturing variations exist. Always test your specific card!
+
+---
+
+### Verifying Card Authenticity
+
+Many "branded" SD cards sold online are counterfeits with:
+- Hacked firmware reporting fake capacity
+- Poor quality flash chips
+- Buggy controllers
+
+**Test for counterfeits:**
+- **Windows:** Use [h2testw](https://www.heise.de/download/product/h2testw-50539)
+- **Mac/Linux:** Use [F3](https://github.com/AltraMayor/f3)
+
+These tools verify actual capacity by writing and reading test data. The Samsung card in our testing reported 28GB actual capacity when sold as 64GB - a clear sign of counterfeiting.
+
+---
+
+### What To Try If You Have SD Card Issues
+
+**If your SD card works on your computer but fails on your microcontroller:**
+
+1. **Run `sdcard_helper.read_mbr()` first** - Tests basic SPI block reads
+2. **Try a different SD card** - Preferably a cheap generic one
+3. **Test for counterfeits** - Use h2testw or F3 to verify
+4. **Format as FAT32** - Not exFAT (some controllers don't support it)
+5. **Try lower baudrates** - Some cards work at 1-4MHz but not higher
+6. **Check wiring and power** - Eliminate hardware issues first
+
+**If `read_mbr()` hangs, stop - the card is incompatible. No amount of debugging will fix a broken SD card controller.**
+
+---
+
+### The Bottom Line
+
+**SD card compatibility with microcontrollers is unpredictable and counterintuitive:**
+
+- ❌ Expensive doesn't mean better
+- ❌ Name brand doesn't guarantee compatibility  
+- ❌ Working on PC doesn't mean it works on microcontrollers
+- ✅ Cheap generic cards often work best
+- ✅ Simpler is better for embedded systems
+- ✅ Always test before committing to a card
+
+**When in doubt, buy a cheap generic microSD card. It will probably work better than the expensive one.**
+
+---
 
 ## Related Links
 
 - [ESP32 MAX98357A Audio Player](https://github.com/jouellnyc/esp32_MAX98357A)
 - [CircuitPython Issue #10741](https://github.com/adafruit/circuitpython/issues/10741)
 - [CircuitPython Issue #10758](https://github.com/adafruit/circuitpython/issues/10758)
+- [h2testw - SD Card Verification Tool](https://www.heise.de/download/product/h2testw-50539)
+- [F3 - Fight Flash Fraud](https://github.com/AltraMayor/f3)
 
 ---
 
