@@ -250,6 +250,8 @@ def run_test():
     return True
 
 
+
+
 def stress_test_listdir(iterations=100):
     """
     Stress test: Repeatedly call os.listdir() to verify stability.
@@ -279,20 +281,33 @@ def stress_test_listdir(iterations=100):
             return False
     
     print(f"\nRunning {iterations} listdir operations...")
-    print("(Showing file list on first attempt only)\n")
+    print("(Verifying consistent results with canary checking)\n")
     
     count = 0
-    first_result = None
+    canary_result = None  # Store first successful result as baseline
+    inconsistencies = []  # Track any inconsistent results
     
     for x in range(iterations):
         try:
             result = os.listdir('/sd/')
             
-            # Show files on first iteration
-            if x == 0:
-                print(f"Files found: {result}")
-                print()
-                first_result = result
+            # First successful iteration sets the canary
+            if canary_result is None:
+                canary_result = sorted(result)  # Sort for consistent comparison
+                print(f"📍 Canary established: {len(canary_result)} files")
+                print(f"   Files: {canary_result}\n")
+            else:
+                # Check if current result matches canary
+                current_sorted = sorted(result)
+                if current_sorted != canary_result:
+                    inconsistencies.append({
+                        'iteration': x,
+                        'expected': canary_result,
+                        'got': current_sorted
+                    })
+                    print(f"\n⚠️  INCONSISTENCY on iteration {x}!")
+                    print(f"   Expected: {len(canary_result)} files - {canary_result}")
+                    print(f"   Got:      {len(current_sorted)} files - {current_sorted}")
             
             # This only runs if there WAS NO error
             count += 1
@@ -301,13 +316,47 @@ def stress_test_listdir(iterations=100):
             # This only runs if there WAS an error
             print(f"\n✗ Error on attempt {x}: {e}")
             print(f"   Cumulative successes before failure: {count}")
+            print(f"   Canary was: {canary_result}")
             return False
         
         finally:
             # Show progress every 10 iterations
             if (x + 1) % 10 == 0:
-                print(f"Attempt {x} | Cumulative Successes: {count}")
+                status = "✓" if len(inconsistencies) == 0 else f"⚠️ {len(inconsistencies)} inconsistencies"
+                print(f"Attempt {x} | Successes: {count} | {status}")
     
+    # Final summary
+    print("\n" + "=" * 60)
+    print("STRESS TEST RESULTS")
+    print("=" * 60)
+    print(f"Total attempts:     {iterations}")
+    print(f"Successful:         {count}")
+    print(f"Failed:             {iterations - count}")
+    print(f"Success rate:       {(count/iterations)*100:.1f}%")
+    print(f"Inconsistencies:    {len(inconsistencies)}")
+    print(f"Consistency rate:   {((count - len(inconsistencies))/count)*100:.1f}%")
+    
+    if count == iterations and len(inconsistencies) == 0:
+        print("\n✅ PERFECT! All operations succeeded with consistent results!")
+        print(f"   SD card is stable and reliable")
+        print(f"   All {iterations} listdir operations returned identical file lists")
+    elif len(inconsistencies) > 0:
+        print(f"\n⚠️  {len(inconsistencies)} inconsistent results detected!")
+        print(f"   File list changed during testing")
+        print(f"\n   First inconsistency at iteration {inconsistencies[0]['iteration']}:")
+        print(f"     Expected: {inconsistencies[0]['expected']}")
+        print(f"     Got:      {inconsistencies[0]['got']}")
+        if len(inconsistencies) > 1:
+            print(f"\n   ... and {len(inconsistencies) - 1} more inconsistencies")
+    else:
+        print(f"\n⚠️  {iterations - count} failures detected")
+        print(f"   SD card has stability issues")
+    
+    print("=" * 60)
+    
+    return count == iterations and len(inconsistencies) == 0
+
+
     # Final summary
     print("\n" + "=" * 60)
     print("STRESS TEST RESULTS")
