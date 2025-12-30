@@ -59,7 +59,7 @@ Based on Adafruit's documentation and our test results, we recommend using cards
 | Board | Status | Max Speed | Key Issue |
 |-------|--------|-----------|-----------|
 | **🏆 Waveshare RP2350-Plus** | ✅✅✅ Perfect | 12 MHz | None |
-| **ESP32 Feather Huzzah** | ✅✅✅ Excellent | 8 MHz (4 MHz most reliable)| None (with tested 16GB card) |
+| **ESP32 Feather Huzzah** | ✅✅✅ Excellent | up to 8 MHz (4 MHz most reliable)| None (with tested 16GB card) |
 | **ESP32-S3 DevKitC** | ⚠ Poor | 250 kHz | 1-second timeout bug |
 
 ---
