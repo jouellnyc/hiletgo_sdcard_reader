@@ -339,10 +339,6 @@ Capacity: 28352.00 MB (27.69 GB)
 Reading MBR (block 0)...  ← HANGS HERE
 ```
 
-**What this proves:** Three completely different microcontrollers, running at vastly different speeds (48x difference between slowest and fastest!), all report **identical capacity** and all **hang at the exact same operation**. This is definitive proof the Samsung card's SPI controller implementation is fundamentally broken.
-
-**Smoking gun evidence:** Card reports ~28GB capacity
-
 ---
 
 ### Why This Happens
@@ -404,37 +400,7 @@ Reading MBR...
 
 ---
 
-### Recommended SD Cards
-
-**Cards confirmed to work well:**
-- Generic/no-name microSD cards from various manufacturers
-- SanDisk Ultra (basic models, not Extreme/Pro)
-- Basic Kingston cards
-- **Rule of thumb: Cheaper and simpler is often better**
-
-**Cards with known issues:**
-- Samsung EVO Select 64GB (tested, failed on all 3 boards)
-- Samsung EVO Plus (likely similar issues)
-- High-performance cards marketed for cameras/video (UHS-II, V90, etc.)
-
 **Note:** Even within the same model, manufacturing variations exist. Always test your specific card!
-
----
-
-### Verifying Card Authenticity
-
-Many "branded" SD cards sold online are counterfeits with:
-- Hacked firmware reporting fake capacity
-- Poor quality flash chips
-- Buggy controllers
-
-**Test for counterfeits:**
-- **Windows:** Use [h2testw](https://www.heise.de/download/product/h2testw-50539)
-- **Mac/Linux:** Use [F3](https://github.com/AltraMayor/f3)
-
-These tools verify actual capacity by writing and reading test data. The Samsung card in our testing reported 28GB actual capacity when sold as 64GB - a clear sign of counterfeiting.
-
----
 
 ### What To Try If You Have SD Card Issues
 
