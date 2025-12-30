@@ -210,7 +210,7 @@ if sdcard_helper.mount():
 
 ---
 
-## What's New in v1.2.0
+## What's New in sdcard_helper
 
 ### Improved Reliability
 
