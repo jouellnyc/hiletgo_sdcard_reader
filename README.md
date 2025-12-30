@@ -1,4 +1,4 @@
-# CircuitPython SD Card Reader Guide
+# CircuitPython SD Card Reader Guide for HiLetgo SD card reader
 
 Quick reference for SD card compatibility across microcontroller boards with CircuitPython.
 
