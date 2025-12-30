@@ -171,7 +171,7 @@ if sdcard_helper.mount():
 This sequence gives SD card controllers time to stabilize and clear any stale state, which helps with:
 - Marginal/slower SD cards
 - Cards with complex controllers
-- Soft reboot scenarios on some boards
+- Various initialization scenarios
 
 **Note:** This does NOT fix fundamentally incompatible SD cards (like the Samsung card documented below). Those cards will fail regardless of warm-up sequence because their SPI implementation is broken.
 
@@ -181,6 +181,7 @@ This sequence gives SD card controllers time to stabilize and clear any stale st
 - **Modular architecture:** Clean separation of initialization, validation, and mounting
 - **Better error handling:** Clear diagnostics at each step
 - **Version tracking:** Know exactly which version you're running
+- **Standalone MBR testing:** Test SD card compatibility without mounting
 
 ---
 
@@ -198,6 +199,13 @@ Check your sdcard_helper version:
 import sdcard_helper
 # Prints: sdcard_helper v1.2.0
 print(sdcard_helper.__version__)
+```
+
+Test SD card compatibility:
+```python
+import sdcard_helper
+result = sdcard_helper.read_mbr()
+# If this hangs, the SD card is incompatible
 ```
 
 ---
@@ -298,17 +306,42 @@ Issues 1 and 2 overlap but are not fully 'work aroundable'...Really the DEV KIT 
 
 ### The Samsung Card's Behavior
 
-**Successful operations:**
+**Successful operations (ALL boards consistently report the same):**
 - ✅ `sdcardio.SDCard()` initialization
-- ✅ `_sd.count()` returns block count (58,064,896 blocks)
-- ✅ Capacity calculation (28352 MB / 27.69 GB)
+- ✅ `_sd.count()` returns block count: **58,064,896 blocks** (identical across all 3 boards!)
+- ✅ Capacity calculation: **28352 MB / 27.69 GB** (identical across all 3 boards!)
 
-**Where it fails:**
+**Where it fails (ALL boards fail at the exact same point):**
 - ❌ **`readblocks(0, mbr)` hangs indefinitely**
 - ❌ Cannot read ANY data blocks via SPI
 - ❌ `storage.mount()` never completes
+- ❌ **Hangs at "Reading MBR (block 0)..." on ALL boards** regardless of:
+  - Different chip architectures (ESP32-S3, ESP32, RP2350)
+  - Different baudrates (250kHz, 4MHz, 12MHz)
+  - Different CircuitPython versions
+  - Hard reset vs soft reset
 
-**Interesting finding:** Card reports ~28GB capacity but is sold as 64GB, strongly suggesting it's a **counterfeit card with hacked firmware**. This buggy firmware likely explains why SPI block reads fail.
+**Test results showing identical failure across all boards:**
+```
+# Waveshare RP2350 @ 12MHz
+Block count: 58064896
+Capacity: 28352.00 MB (27.69 GB)
+Reading MBR (block 0)...  ← HANGS HERE
+
+# Huzzah32 @ 4MHz  
+Block count: 58064896
+Capacity: 28352.00 MB (27.69 GB)
+Reading MBR (block 0)...  ← HANGS HERE
+
+# DevKitC @ 250kHz
+Block count: 58064896
+Capacity: 28352.00 MB (27.69 GB)
+Reading MBR (block 0)...  ← HANGS HERE
+```
+
+**What this proves:** Three completely different microcontrollers, running at vastly different speeds (48x difference between slowest and fastest!), all report **identical capacity** and all **hang at the exact same operation**. This is definitive proof the Samsung card's SPI controller implementation is fundamentally broken.
+
+**Smoking gun evidence:** Card reports ~28GB capacity
 
 ---
 
@@ -352,7 +385,7 @@ result = sdcard_helper.read_mbr()
 # Try a different card before wasting time debugging
 ```
 
-**What `read_mbr()` shows:**
+**What `read_mbr()` shows with a working card:**
 ```
 Testing MBR read (no mount required)...
   Initializing SPI...
@@ -380,7 +413,7 @@ Reading MBR...
 - **Rule of thumb: Cheaper and simpler is often better**
 
 **Cards with known issues:**
-- Samsung EVO Select (tested multiple, all failed)
+- Samsung EVO Select 64GB (tested, failed on all 3 boards)
 - Samsung EVO Plus (likely similar issues)
 - High-performance cards marketed for cameras/video (UHS-II, V90, etc.)
 
