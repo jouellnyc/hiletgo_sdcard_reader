@@ -88,7 +88,7 @@ Initial testing suggested some boards (particularly ESP32-S3) had reliability is
 
 **ALL boards work perfectly with 16GB cards. ALL boards fail with 64GB cards.**
 
-What appeared to be board-specific problems were actually SD card compatibility issues. The ESP32-S3, which initially seemed problematic, runs at 12MHz with 100% reliability when using a 16GB card.
+What appeared to be board-specific problems were like SD card compatibility issues or environmentally issues - I am simply not sure. The ESP32-S3, which initially seemed problematic, runs at 12MHz with 100% reliability when using a 16GB card.
 
 **Stress test results (16GB cards):**
 - ESP32-S3: 555/555 consecutive operations (100% success)
