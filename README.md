@@ -7,7 +7,7 @@ Quick reference for SD card compatibility across microcontroller boards with Cir
 
 ---
 
-## ⚠️ CRITICAL: Use 16GB SD Cards
+## ⚠️ CRITICAL: Use SD Cards 32 GB or less
 
 **The most important factor for reliability is SD card size, not the board or reader.**
 
