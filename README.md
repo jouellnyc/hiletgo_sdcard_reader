@@ -157,7 +157,7 @@ SD_BAUDRATE = 12_000_000  # 12 MHz
 SD_BAUDRATE = 8_000_000  # Up to 8 MHz
 ```
 
-**Recommendation:** ⭐⭐⭐⭐⭐ Excellent choice, widely available
+**Recommendation:** ⭐⭐⭐⭐⭐ Good  choice, but no reason not to get the 2 MB psram version instead.
 
 ---
 
@@ -175,7 +175,7 @@ SD_BAUDRATE = 8_000_000  # Up to 8 MHz
 SD_BAUDRATE = 4_000_000  # 4 MHz
 ```
 
-**Recommendation:** ⭐⭐⭐⭐⭐ Great choice
+**Recommendation:** ⭐⭐⭐⭐ Good choice, but no reason not to get an S3 instead.
 
 ---
 
