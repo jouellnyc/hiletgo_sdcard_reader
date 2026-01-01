@@ -432,10 +432,7 @@ After extensive testing with multiple boards, cards, and configurations:
 
 ---
 
----
-
 ## SD Card Module Addendum: Testing Results with 5V
-
 
 ### HiLetgo SD Card Module (5V with Level Shifter)
 
@@ -482,5 +479,4 @@ For simpler setup and consistent results across all boards, the WaveShare native
 ## License
 
 MIT License
-
 
