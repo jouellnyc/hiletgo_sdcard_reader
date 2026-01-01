@@ -432,6 +432,44 @@ After extensive testing with multiple boards, cards, and configurations:
 
 ---
 
+---
+
+## SD Card Module Addendum: Testing Results with 5V
+
+
+### HiLetgo SD Card Module (5V with Level Shifter)
+
+**Tested configuration:**
+- Module: [HiLetgo SD Card Reader](https://www.amazon.com/dp/B07BJ2P6X6)
+- Power: 5V (required by level shifter)
+- SD Card: 16GB generic
+- Capacitor: Tested with and without 100µF
+
+**Results:**
+- ✅ Works when powered at 5V
+- ❌ Does not work at 3.3V (level shifter requires 5V)
+- Various reliability experiences across different setups
+
+**Note:** This repository documents our testing with the HiLetgo module. 
+
+For simpler setup and consistent results across all boards, the WaveShare native 3.3V module worked well in our testing and is highly reccommended.
+
+
+### WaveShare Micro SD Storage Board (Native 3.3V)
+
+**Tested configuration:**
+- Module: [WaveShare Micro SD Storage Board](https://www.waveshare.com/wiki/Micro_SD_Storage_Board)
+- Power: 3.3V (native, no level shifter)
+- SD Card: 16GB generic
+- Capacitor: Not used
+
+**Results:**
+- ✅ ESP32-S3 DevKitC: Works perfectly
+- ✅ Waveshare RP2350-Plus: Works perfectly
+- ✅ ESP32 Feather Huzzah: Works perfectly
+- ✅ All boards tested at rated speeds with no issues
+---
+
 ## Related Links
 
 - [ESP32 MAX98357A Audio Player](https://github.com/jouellnyc/esp32_MAX98357A)
