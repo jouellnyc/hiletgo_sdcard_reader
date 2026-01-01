@@ -1,0 +1,6 @@
+# Ignore the sync script itself
+sync.sh
+
+# Ignore any logs or temp files the script might create
+sync_log.txt
+*.tmp
