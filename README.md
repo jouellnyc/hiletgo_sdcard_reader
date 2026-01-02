@@ -64,7 +64,7 @@ Disk /dev/sda: 58.24 GiB, 62534975488 bytes, 122138624 sectors
 | **🏆 Waveshare RP2350-Plus** | ✅✅✅✅ Perfect | 12 MHz | Fastest, best overall, amazing value|
 | **ESP32-S3 DevKitC** | ✅✅✅ Excellent | 12 MHz | Works great with 16GB cards |
 | **ESP32-S2 DevKitC** | ✅✅✅ Excellent | 4-8 MHz | Reliable, but YMMV |
-| **ESP32 Feather Huzzah** | ✅✅✅ Very Good | 4-8 MHz | Reliable, but YMMV, pricey at the time of this post|
+| **ESP32 Feather Huzzah** | ✅✅ Very Good | 4-8 MHz | Reliable, but YMMV, pricey at the time of this post|
 
 **Important:** With 16GB cards, all boards perform well. Previous reports of board-specific issues were related to incompatible SD cards, not the boards themselves.
 
