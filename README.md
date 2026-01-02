@@ -464,7 +464,6 @@ For simpler setup and consistent results across all boards, the WaveShare native
 - ✅ ESP32-S3 DevKitC: Works perfectly
 - ✅ Waveshare RP2350-Plus: Works perfectly
 - ✅ ESP32 Feather Huzzah: Works perfectly
-- ✅ All boards tested at rated speeds with no issues
 ---
 
 ## Related Links
