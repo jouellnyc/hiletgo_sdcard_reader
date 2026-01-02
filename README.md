@@ -63,10 +63,10 @@ Disk /dev/sda: 58.24 GiB, 62534975488 bytes, 122138624 sectors
 |-------|--------|-----------|-------|
 | **🏆 Waveshare RP2350-Plus** | ✅✅✅✅ Perfect | 12 MHz | Fastest, best overall |
 | **ESP32-S3 DevKitC** | ✅✅✅ Excellent | 12 MHz | Works great with 16GB cards |
-| **ESP32 Feather Huzzah** | ✅✅✅ Excellent | 8 MHz | Very popular, reliable |
-| **ESP32-S2 DevKitC** | ✅✅✅ Excellent | 4 MHz | Solid performance |
+| **ESP32 Feather Huzzah** | ✅✅✅ Very Good | 4-8 MHz | Reliable, but YMMV |
+| **ESP32-S2 DevKitC** | ✅✅✅ Excellent | 4-8 MHz | Reliable, but YMMV |
 
-**Important:** With 16GB cards, all boards perform excellently. Previous reports of board-specific issues were related to incompatible SD cards, not the boards themselves.
+**Important:** With 16GB cards, all boards perform well. Previous reports of board-specific issues were related to incompatible SD cards, not the boards themselves.
 
 ---
 
@@ -112,7 +112,7 @@ What appeared to be board-specific problems were like SD card compatibility issu
 - Baudrate: 12 MHz
 - Soft reboot (Ctrl+D): Works fine
 - Tested with: 16GB generic card
-- Result: Perfect reliability
+- Result: Just a Beast: Perfect reliability, depite only 512k ram
 
 **Configuration:**
 ```python
@@ -150,7 +150,7 @@ SD_BAUDRATE = 12_000_000  # 12 MHz
 - Baudrate: Up to 8 MHz
 - Soft reboot (Ctrl+D): Works perfectly
 - Tested with: 16GB generic card
-- Result: 100% reliability
+- Result: 100% reliability on fast reads but over the course of a few minutes it failed to continuously play even low quality files well and lost connection to the sd card.
 
 **Configuration:**
 ```python
