@@ -88,7 +88,7 @@ Initial testing suggested some boards (particularly ESP32-S3) had reliability is
 
 **ALL boards work perfectly with 16GB cards. ALL boards fail with 64GB cards.**
 
-What appeared to be board-specific problems were like SD card compatibility issues or environmentally issues - I am simply not sure. The ESP32-S3, which initially seemed problematic, runs at 12MHz with 100% reliability when using a 16GB card.
+What appeared to be board-specific problems initially (failed mounts and files here one moment and gone the next), were environmentally issues (breadboard wiring) - I am simply not sure. The ESP32-S3 Dev KIT C, which initially seemed problematic, runs at 12MHz with 100% reliability when using a 16GB card.
 
 **Stress test results (16GB cards):**
 - ESP32-S3: 555/555 consecutive operations (100% success)
@@ -99,7 +99,7 @@ What appeared to be board-specific problems were like SD card compatibility issu
 **When troubleshooting SD card issues with CircuitPython:**
 1. ✅ **First, try a different SD card** (use 16GB)
 2. Then check wiring, power, code
-3. Don't assume it's the board!
+3. Don't assume it's the sdcard reader!
 
 ---
 
