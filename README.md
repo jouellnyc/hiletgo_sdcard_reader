@@ -7,7 +7,7 @@ Quick reference for SD card compatibility across microcontroller boards with Cir
 
 ---
 
-## ⚠️ CRITICAL: Use SD Cards 32 GB or less
+## ⚠ CRITICAL: Use SD Cards 32 GB or less
 
 **The most important factor for reliability is SD card size, not the board or reader.**
 
@@ -57,16 +57,16 @@ Disk /dev/sda: 58.24 GiB, 62534975488 bytes, 122138624 sectors
 
 ## Board Compatibility
 
-**All tested boards work reliably with 16GB cards.**
+**Board reliability varies significantly with 16GB cards.**
 
 | Board | Status | Max Speed | Notes |
 |-------|--------|-----------|-------|
-| **🏆 Waveshare RP2350-Plus** | ✅✅✅✅ Perfect | 12 MHz | Fastest, best overall, amazing value|
-| **ESP32-S3 DevKitC** | ✅✅✅ Excellent | 12 MHz | Works great with 16GB cards |
-| **ESP32-S2 DevKitC** | ✅✅✅ Excellent | 4-8 MHz | Reliable, but YMMV |
-| **ESP32 Feather Huzzah** | ✅✅ Very Good | 4-8 MHz | Reliable, but YMMV, pricey at the time of this post|
+| **🏆 Waveshare RP2350-Plus** | ✅✅✅✅ Perfect | 12 MHz | Fastest, most consistent, amazing value|
+| **ESP32 Feather Huzzah** | ✅✅ Very Good | 4-8 MHz | Generally reliable, pricey at the time of this post|
+| **ESP32-S3 DevKitC** | ⚠️ Inconsistent | 12 MHz | Directory operations reliable, file reads inconsistent |
+| **ESP32-S2 DevKitC** | ⚠️ Inconsistent | 4-8 MHz | Variable results across testing sessions |
 
-**Important:** With 16GB cards, all boards perform well. Previous reports of board-specific issues were related to incompatible SD cards, not the boards themselves.
+**Important:** With 16GB cards, RP2350 and Huzzah boards perform consistently well. ESP32-S3 and S2 DevKits show varying behavior that can differ between testing sessions and individual boards.
 
 ---
 
@@ -86,20 +86,30 @@ Initial testing suggested some boards (particularly ESP32-S3) had reliability is
 
 ### The Discovery
 
-**ALL boards work perfectly with 16GB cards. ALL boards fail with 64GB cards.**
+**Card size is critical:** ALL boards work better with 16GB cards. ALL boards fail with 64GB cards.
 
-What appeared to be board-specific problems initially (failed mounts and files here one moment and gone the next), were environmentally issues (breadboard wiring) - I am simply not sure. The ESP32-S3 Dev KIT C, which initially seemed problematic, runs at 12MHz with 100% reliability when using a 16GB card.
+**Board consistency varies:** The RP2350 and Huzzah boards showed predictable, repeatable behavior across testing sessions. The ESP32-S3 and S2 DevKits showed variable results that could differ significantly between sessions, including scenarios where directory operations (listdir) would succeed reliably while file content reads would fail after the first attempt.
 
-**Stress test results (16GB cards):**
-- ESP32-S3: 555/555 consecutive operations (100% success)
-- All other boards: 100% reliability
+### Key Observations
+
+**ESP32-S3 and S2 Behavior Patterns:**
+- Directory operations (os.listdir) can work flawlessly for hundreds of consecutive operations
+- File content reads may succeed once then fail on all subsequent attempts
+- The same board and card combination may behave differently across power cycles
+- Environmental factors (breadboard quality, wire length, power stability) appear to have greater impact on these boards
+
+**RP2350 and Huzzah Behavior:**
+- Consistent performance across multiple testing sessions
+- Predictable behavior that matches expectations
+- More forgiving of varying environmental conditions
 
 ### Key Takeaway
 
 **When troubleshooting SD card issues with CircuitPython:**
 1. ✅ **First, try a different SD card** (use 16GB)
-2. Then check wiring, power, code
-3. Don't assume it's the sdcard reader!
+2. Consider board choice - RP2350 offers most consistent results
+3. Then check wiring, power, code
+4. Don't assume it's the SD card reader!
 
 ---
 
@@ -107,75 +117,79 @@ What appeared to be board-specific problems initially (failed mounts and files h
 
 ### 🏆 Waveshare RP2350-Plus (RECOMMENDED)
 
-**Fastest performance, excellent reliability.**
+**Fastest performance, most consistent reliability.**
 
 - Baudrate: 12 MHz
 - Soft reboot (Ctrl+D): Works fine
 - Tested with: 16GB generic card
-- Result: Just a Beast: Perfect reliability, depite only 512k ram
+- Result: Consistently reliable across all testing sessions
 
 **Configuration:**
 ```python
 SD_BAUDRATE = 12_000_000  # 12 MHz
 ```
 
-**Recommendation:** ⭐⭐⭐⭐⭐ Best choice for new projects
-
----
-
-### ESP32-S3 DevKitC
-
-**Excellent performance with correct SD card.**
-
-- Baudrate: 12 MHz (same as RP2350!)
-- Soft reboot (Ctrl+D): Works fine
-- Tested with: 16GB generic card (two different cards)
-- Result: **555/555 stress test = 100% reliability**
-
-**Previous misconception:** Early testing suggested this board had timeout issues. Extensive recent testing proves it works perfectly with 16GB cards at full speed.
-
-**Configuration:**
-```python
-SD_BAUDRATE = 12_000_000  # 12 MHz
-```
-
-**Recommendation:** ⭐⭐⭐⭐⭐ Excellent choice, works as well as RP2350
+**Recommendation:** ⭐⭐⭐⭐⭐ Best choice for new projects requiring SD card reliability
 
 ---
 
 ### ESP32 Feather Huzzah
 
-**Very popular board, excellent performance.**
+**Popular board with generally good SD card performance.**
 
 - Baudrate: Up to 8 MHz
 - Soft reboot (Ctrl+D): Works perfectly
 - Tested with: 16GB generic card
-- Result: 100% reliability on fast reads but over the course of a few minutes it failed to continuously play even low quality files well and lost connection to the sd card.
+- Result: Generally reliable, though lost SD card connection during extended continuous audio playback testing
 
 **Configuration:**
 ```python
 SD_BAUDRATE = 8_000_000  # Up to 8 MHz
 ```
 
-**Recommendation:** ⭐⭐⭐⭐⭐ Good  choice, but no reason not to get the 2 MB psram version instead.
+**Recommendation:** ⭐⭐⭐⭐ Good choice for most projects
+
+---
+
+### ESP32-S3 DevKitC
+
+**Fast but inconsistent SD card behavior.**
+
+- Baudrate: 12 MHz (capable of high speeds)
+- Soft reboot (Ctrl+D): Works fine
+- Tested with: 16GB generic card (two different cards)
+- Result: **Directory operations highly reliable (555/555 stress test), but file content reads show inconsistent behavior**
+
+**Observed patterns:**
+- os.listdir() operations: 100% success rate across hundreds of consecutive calls
+- File content reads: First read may succeed, subsequent reads often fail with I/O errors
+- Behavior varies between power cycles and testing sessions
+- Same code that fails on S3 works reliably on RP2350
+
+**Configuration:**
+```python
+SD_BAUDRATE = 12_000_000  # 12 MHz
+```
+
+**Recommendation:** ⭐⭐ Consider alternative boards if SD card file access reliability is critical
 
 ---
 
 ### ESP32-S2 DevKitC
 
-**Solid performance, good availability.**
+**Variable SD card performance across testing.**
 
 - Baudrate: 4 MHz
 - Soft reboot (Ctrl+D): Works fine
 - Tested with: 16GB generic card
-- Result: 100% reliability
+- Result: Inconsistent results across different testing sessions
 
 **Configuration:**
 ```python
 SD_BAUDRATE = 4_000_000  # 4 MHz
 ```
 
-**Recommendation:** ⭐⭐⭐⭐ Good choice, but no reason not to get an S3 instead.
+**Recommendation:** ⭐⭐ Consider S3 or other boards if SD card access is important
 
 ---
 
@@ -184,13 +198,12 @@ SD_BAUDRATE = 4_000_000  # 4 MHz
 ### 1. Choose Board & SD Card
 
 **Boards:**
-- **All tested boards work great!** Choose based on availability and other project needs
-- Fastest: RP2350 or S3 (12 MHz)
-- Most popular: Huzzah (8 MHz)
-- Budget: S2 (4 MHz)
+- **Most reliable:** RP2350 (12 MHz, consistent behavior)
+- **Generally reliable:** Huzzah (8 MHz, popular choice)
+- **Variable results:** S3 and S2 DevKits (may require troubleshooting)
 
 **SD Cards:**
-- **✅ Use:** 16GB cards (proven to work on all boards at all speeds)
+- **✅ Use:** 16GB cards (proven to work best on all boards)
 - **❌ Avoid:** 64GB+ cards (CircuitPython limitation)
 
 ### 2. Hardware Setup
@@ -198,6 +211,7 @@ SD_BAUDRATE = 4_000_000  # 4 MHz
 - Optional: Add 100µF capacitor to SD card VCC (works with or without)
 - Use short wires (<6 inches)
 - Power via USB or external supply
+- Consider using soldered connections instead of breadboards for ESP32 DevKits
 
 ### 3. Pin Configuration
 
@@ -221,7 +235,7 @@ elif "s3" in board_type:
     SD_MOSI = board.IO11
     SD_MISO = board.IO13
     SD_CS   = board.IO16
-    SD_BAUDRATE = 12_000_000  # Works great at full speed!
+    SD_BAUDRATE = 12_000_000
 
 # ESP32 Feather Huzzah
 elif "huzzah32" in board_type and "s3" not in board_type:
@@ -311,8 +325,8 @@ test_sd_debug.stress_test_listdir(100)
 | Baudrate | 12 MHz | 12 MHz | 8 MHz | 4 MHz |
 | Mount time | ~0.5s | ~0.5s | ~0.5s | ~0.5s |
 | listdir() | <1ms | <1ms | ~2ms | ~2ms |
-| Read 5MB file | ~1s | ~1s | ~2.5s | ~3s |
-| Reliability | 100% | 100% | 100% | 100% |
+| Directory reliability | 100% | 100% | ~100% | Variable |
+| File read reliability | 100% | Inconsistent | ~95% | Variable |
 
 *All tests with 16GB generic cards*
 
@@ -332,13 +346,25 @@ test_sd_debug.stress_test_listdir(100)
 - This is a CircuitPython limitation, not a hardware problem
 - Switch to 16GB card
 
+**Directory operations work but file reads fail:**
+- This pattern has been observed on ESP32-S3 DevKits
+- Try power cycling the board
+- Consider switching to RP2350 for more consistent results
+- Check wiring and power supply quality
+- Try soldered connections instead of breadboards
+
+**Inconsistent behavior across power cycles:**
+- Observed on ESP32-S2 and S3 DevKits
+- May indicate environmental sensitivity
+- Improve power supply stability
+- Reduce wire lengths
+- Consider alternative board (RP2350)
+
 **Slow performance:**
 - Check your baudrate setting in `sd_config.py`
-- Most boards can handle 4-12MHz with 16GB cards
-
-**"It worked before but doesn't now":**
-- Did you change SD cards? Try going back to your original card
-- Card compatibility matters more than you think!
+- RP2350 and S3 can handle 12MHz
+- Huzzah works well at 8MHz
+- S2 may need 4MHz
 
 ---
 
@@ -407,9 +433,9 @@ Reading MBR...
 ✅ MBR read successful!
 ```
 
-**Stress test:** 555/555 consecutive operations on ESP32-S3 (100%)
-
-**Result:** Cards initialize correctly, report correct capacity, all operations succeed reliably on all boards at all speeds.
+**RP2350 stress test:** Consistent 100% success across all operations
+**ESP32-S3 directory stress test:** 555/555 consecutive listdir operations (100%)
+**ESP32-S3 file access:** Variable results, first read may succeed then subsequent reads fail
 
 ---
 
@@ -417,18 +443,24 @@ Reading MBR...
 
 After extensive testing with multiple boards, cards, and configurations:
 
-### ✅ What Works
-- **16GB SD cards** on any tested board
-- All boards (RP2350, S3, S2, Huzzah) at their rated speeds
-- With or without 100µF capacitor
+### ✅ What Works Consistently
+- **16GB SD cards** on RP2350
+- **16GB SD cards** on Huzzah (generally)
+- Directory operations on most boards
 - Baudrates from 4MHz to 12MHz
+
+### ⚠️ What Shows Variable Results
+- **File content reads on ESP32-S3 and S2 DevKits**
+- Extended continuous playback on some boards
+- Performance consistency across power cycles (S2, S3)
 
 ### ❌ What Doesn't Work
 - **64GB+ SD cards** on any board
 - Cards >32GB (CircuitPython limitation)
 
-### 💡 Key Insight
-**Card size is everything.** Board choice matters for speed, but any of the tested boards will work perfectly with a 16GB card.
+### 💡 Key Insights
+**Card size is critical:** Use 16GB cards for best compatibility.
+**Board choice matters:** RP2350 provides most consistent SD card behavior across all operations. ESP32 DevKits (S2, S3) may require additional troubleshooting and show less predictable behavior with file access operations.
 
 ---
 
@@ -449,8 +481,7 @@ After extensive testing with multiple boards, cards, and configurations:
 
 **Note:** This repository documents our testing with the HiLetgo module. 
 
-For simpler setup and consistent results across all boards, the WaveShare native 3.3V module worked well in our testing and is highly reccommended.
-
+For simpler setup and consistent results across all boards, the WaveShare native 3.3V module worked well in our testing and is highly recommended.
 
 ### WaveShare Micro SD Storage Board (Native 3.3V)
 
@@ -461,16 +492,17 @@ For simpler setup and consistent results across all boards, the WaveShare native
 - Capacitor: Not used
 
 **Results:**
-- ✅ ESP32-S3 DevKitC: Works perfectly
-- ✅ Waveshare RP2350-Plus: Works perfectly
-- ✅ ESP32 Feather Huzzah: Works perfectly
+- ✅ ESP32-S3 DevKitC: Directory operations work well, file reads show variable results
+- ✅ Waveshare RP2350-Plus: Works consistently across all operations
+- ✅ ESP32 Feather Huzzah: Generally reliable performance
+
 ---
 
 ## Related Links
 
 - [ESP32 MAX98357A Audio Player](https://github.com/jouellnyc/esp32_MAX98357A)
 - [Adafruit SD Card Guide - CircuitPython](https://learn.adafruit.com/adafruit-microsd-spi-sdio/circuitpython)
-- [CircuitPython Issue #10741](https://github.com/adafruit/circuitpython/issues/10741) - Original S3 issue report
+- [CircuitPython Issue #10741](https://github.com/adafruit/circuitpython/issues/10741) - S3 behavior reports
 - [CircuitPython Issue #10758](https://github.com/adafruit/circuitpython/issues/10758)
 
 ---
