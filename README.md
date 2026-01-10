@@ -189,7 +189,7 @@ SD_BAUDRATE = 12_000_000  # 12 MHz
 SD_BAUDRATE = 4_000_000  # 4 MHz
 ```
 
-**Recommendation:** ⭐⭐ Consider S3 or other boards if SD card access is important
+**Recommendation:** ⭐⭐ Consider other boards if SD card access is important
 
 ---
 
@@ -485,6 +485,9 @@ For simpler setup and consistent results across all boards, the WaveShare native
 
 ### WaveShare Micro SD Storage Board (Native 3.3V)
 
+(95% of the time and energy was with Hiletgo but we are sneaky this in as a bonus)
+
+
 **Tested configuration:**
 - Module: [WaveShare Micro SD Storage Board](https://www.waveshare.com/wiki/Micro_SD_Storage_Board)
 - Power: 3.3V (native, no level shifter)
@@ -492,7 +495,6 @@ For simpler setup and consistent results across all boards, the WaveShare native
 - Capacitor: Not used
 
 **Results:**
-- ✅ ESP32-S3 DevKitC: Directory operations work well, file reads show variable results
 - ✅ Waveshare RP2350-Plus: Works consistently across all operations
 - ✅ ESP32 Feather Huzzah: Generally reliable performance
 
